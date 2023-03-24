@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     args = parse_args()
 
-    tmp_dir = 'tmp'
+    tmp_dir = 'tmp_5'
     show_every = 5
     os.makedirs(tmp_dir, exist_ok=True)
 
@@ -40,14 +40,15 @@ if __name__ == "__main__":
 
         video_dir = os.path.join(tmp_dir, str(video_i))
         os.makedirs(video_dir, exist_ok=True)
-
+        fps = cap.get(cv2.CAP_PROP_FPS) / show_every
+        print(f' fps = {fps}')
         count = 0
-        while False: #cap.isOpened():
+        while cap.isOpened():
             ret, frame = cap.read()
             if ret:
 
                 if count % show_every == 0:
-                    image_path = os.path.join(video_dir, f'tmp_{count}.png')
+                    image_path = os.path.join(video_dir, f'tmp_{count:0>5}.png')
                     cv2.imwrite(image_path, frame)
 
                 count += 1
@@ -55,13 +56,3 @@ if __name__ == "__main__":
                 break
 
         cap.release()
-
-        detect3d(
-            reg_weights=args.reg_weights,
-            model_select=args.model_select,
-            source=video_dir,
-            calib_file=args.calib_file,
-            show_result=args.show_result,
-            save_result=args.save_result,
-            output_path=video_dir+'_show'
-        )
